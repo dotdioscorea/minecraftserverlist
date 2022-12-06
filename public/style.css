@@ -1,0 +1,110 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f2f2f2;
+}
+
+h1 {
+  margin: 0;
+  padding: 20px;
+  background-color: #00a0d1;
+  color: #ffffff;
+  text-align: center;
+}
+
+.centrecolumn h1 {
+  margin-bottom: 50px;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+
+h2 {
+  margin: 0;
+  padding: 0;
+  font-size: 24px;
+  color: #00a0d1;
+}
+
+p {
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
+  color: #000000;
+}
+
+.centrecolumn {
+  margin: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+.menu li {
+  float: left;
+  list-style-type: none;
+  margin-right: 15px;
+  font-size: 18px;
+  font-weight: bold;  
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+
+}
+
+.menu {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+/* Style the menu items when the user hovers over them */
+.menu li:hover {
+  text-decoration: underline;
+}
+
+.server {
+  position:  relative;
+  margin-bottom: 20px;
+  padding: 20px;
+  padding-bottom: 40px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+.server h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+
+.server-actions button {
+  padding: 5px 10px;
+  margin-left: 10px;
+  background-color: #009688;
+  color: #fff;
+  border: none;
+  border-radius: 2px;
+}
+
+.server-actions {
+  display: flex;
+  position: absolute;
+  justify-content: flex-end;
+  right:  20px;
+  bottom:  0px;
+}
+
+.date {
+  position:  absolute;
+  font-size: 13px;
+  display: flex-inline;
+  bottom:  10px;
+}

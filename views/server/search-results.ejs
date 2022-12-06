@@ -1,0 +1,13 @@
+<!-- Display the search results -->
+<h2>Search Results for: <%=searchQuery%></h2>
+<script>console.log(searchQuery)</script>
+<ul>
+  <% for (const server of servers) { %>
+    <li><a href="/servers/<%= server._id %>"><%= server.name %></a></li>
+  <% } %>
+</ul>
+<!-- Display a message if there are no search results -->
+<% if (servers.length === 0) { %>
+
+  <p>No servers found matching your search query.</p>
+<% } %>

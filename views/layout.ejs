@@ -1,0 +1,35 @@
+<html>
+<head>
+  <title>Minecraft server list</title>
+  <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Header with website logo and menu -->
+  <header>
+    <h1>My Minecraft Server List</h1>
+    <nav>
+      <ul class='menu'>
+        <li><a href="/server-list">Server List</a></li>
+        <li><a href="/server/server-submit">Submit a Server</a></li>
+        <li style='float:right'>
+        	<form action="search" method="get">
+    		<input type="text" name="query" placeholder="Search servers">
+    		<button type="submit">Search</button>
+  </form>
+        </li>
+</form>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main content of the page -->
+  <div class='centrecolumn'>
+  <%- body %>
+  </div>
+
+  <!-- Footer with copyright information -->
+  <footer>
+    <p>Copyright My Minecraft Server List 2021</p>
+  </footer>
+</body>
+</html>

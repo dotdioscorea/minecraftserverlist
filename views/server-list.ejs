@@ -1,0 +1,23 @@
+<!-- Main content of the page -->
+<main>
+  <h1>Most popular servers</h1> <!-- Insert the server name -->
+  <!-- Loop through all the servers in the database -->
+  <% servers.forEach(function(server) { %>
+    <!-- Display the server details -->
+    <div class="server">
+      <h2><a href="/servers/<%= server._id %>"><%= server.name %></a></h2>
+      <p><%= server.ip %></p>
+      <p><%= server.description %></p>
+      <p class='date'>Date added: <%= server.dateAdded.toLocaleDateString() %></p>
+      <!-- Display the upvote and delete buttons -->
+      <div class="server-actions">
+        <form action="/server/<%= server._id %>/upvote" method="post">
+          <button type="submit">Upvote</button>
+        </form>
+        <form action="/server/delete/<%= server.id %>" method="get">
+          <button type="submit">Delete</button>
+        </form>
+      </div>
+    </div>
+  <% }); %>
+</main>

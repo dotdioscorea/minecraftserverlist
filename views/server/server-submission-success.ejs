@@ -1,0 +1,10 @@
+<h1>Submission Successful</h1>
+
+<p>Your server was submitted successfully. You will be redirected to the server list page in a few seconds, or click <a href="/servers/<%=id%>">here</a> to view your server.</p>
+
+<!-- Use JavaScript to automatically redirect the user to the server list page -->
+<script>
+  setTimeout(function() {
+    window.location = '/servers/<%=id%>';
+  }, 3000); // Redirect the user after 3 seconds
+</script>
