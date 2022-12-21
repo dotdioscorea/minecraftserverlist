@@ -24,7 +24,23 @@
       </nav>
 
       <div id="page1" class="subpage active">
-        <p>page 1</p>
+        
+        <div class="server-info-page">
+          <div class="server-banner" style="text-align: center; width: 100%;">
+            <img src="/banners/<%= server.banner %>" alt="Server banner" style="width: 100%;">
+          </div>
+          <div class="server-description">
+            <%= server.description %>
+          </div>
+          <div>
+            <div class="server-categories">
+              <% for (let category of server.categories) { %>
+                <a href="/category/<%= category %>" class="server-category-button"><%= category %></a>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <div id="page2" class="subpage">

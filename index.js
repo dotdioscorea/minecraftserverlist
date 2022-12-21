@@ -8,13 +8,13 @@ const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 
 const serverRouter = require("./routes/servers");
+const categoryRouter = require("./routes/category");
 const apiRouter = require("./routes/api");
 const indexRouter = require("./routes/index");
 const accountRouter = require("./routes/account");
 const serverStatusChecker = require("./helpers/server-status-checker")
-
 const userSchema = require("./models/userSchema");
-//const ejs = require("ejs"); // Import the ejs module
+const categories = require('./categories');
 
 // Connect to the MongoDB database
 mongoose.connect("mongodb://localhost/minecraft-servers", {
@@ -44,6 +44,8 @@ app.use((req, res, next) => {
   } else {
     app.locals.user = null;
   }
+
+  app.locals.categories = categories;
   next();
 });
 
@@ -52,6 +54,7 @@ app.use(express.static(__dirname + "/public")); // Register the public directory
 app.use('/banners', express.static(__dirname + '/banners'));
 app.use("/servers", serverRouter);
 app.use("/account", accountRouter);
+app.use("/category", categoryRouter);
 app.use("/api", apiRouter);
 app.use("/", indexRouter);
 

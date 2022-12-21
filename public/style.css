@@ -111,8 +111,9 @@ p {
   display: inline-block;
 }
 
-.body {
+.servers-category {
   margin: auto;
+  width: 1000px;
 }
 
 #server-submit-body {
@@ -168,4 +169,22 @@ p {
   font-weight: bold;
   padding: 10px 20px;
   cursor: pointer;
+}
+
+.category-button {
+  display: inline-block;
+  background-color: white;
+  padding: 10px 15px;
+  margin: 0 5px;
+  font-size: 18px;
+  font-weight: bold;
+  text-decoration: none;
+  color: black;
+}
+.menu-bar {
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  background-color: white;
+  margin-bottom: 30px;
+  text-align: center;
 }

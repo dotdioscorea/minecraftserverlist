@@ -55,6 +55,7 @@ router.post("/submit", upload.single("banner"), async (req, res) => {
     const ip = req.body.ip;
     const description = req.body.description;
     const banner = req.file;
+    const categories = req.body['server-categories'];
 
     //CHECK FOR VALID SESSION
     if (
@@ -88,7 +89,10 @@ router.post("/submit", upload.single("banner"), async (req, res) => {
       ip,
       description,
       ownerID: req.session.user.id,
+      categories,
     });
+    filename = server._id + path.extname(banner.originalname);
+    server.banner = filename;
 
     //CHECK SERVER IS ONLINE
     try {
@@ -115,8 +119,6 @@ router.post("/submit", upload.single("banner"), async (req, res) => {
     await ssc.updateServerStatus(server);
 
     //SAVE BANNER TO TEMP FOLDER THEN SAVE
-    filename = server._id + path.extname(banner.originalname);
-    server.banner = filename;
     saveBanner(server, banner);
 
     //ADD SERVER TO USER'S PROFILE

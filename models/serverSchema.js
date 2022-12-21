@@ -4,6 +4,7 @@ const serverSchema = new mongoose.Schema({
   name: String,
   ip: String,
   banner: String,
+  categories: [String],
   port: {
     type: Number,
     default: 25565,

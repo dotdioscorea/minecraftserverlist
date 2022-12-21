@@ -22,6 +22,15 @@
     <label class="submissionlabel" for="description">Description:</label>
     <textarea class="submissionbox" name="description" id="description" required></textarea>
   </p>
+  <div class="form-group">
+    <label for="server-categories">Categories:</label>
+    <% for (category in categories) { %>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="<%= category %>" name="server-categories" value="<%= category %>">
+        <label class="form-check-label" for="<%= category %>"><%= category %></label>
+      </div>
+    <% } %>
+  </div>
   <p>
     <label class="submissionlabel" for="banner">Banner:</label>
     <input class="submissionbox" type="file" name="banner" id="banner" accept="image/gif, image/jpeg, image/jpg, image/png" required>
