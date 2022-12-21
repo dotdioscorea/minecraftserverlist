@@ -1,0 +1,58 @@
+<!-- Main content of the page -->
+<div class="body" id="home-body">
+  <h1>Most popular servers</h1>
+  <!-- Insert the server name -->
+  <!-- Loop through all the servers in the database -->
+  <% servers.forEach(function(server, index) { %>
+  <!-- Display the server details -->
+  <div class="server" style="display: table; width: 100%; height: 101px !important; position: relative;">
+    <div id="rank" style="display: table-cell; width: 80px; background-color: #444;">
+      <h3 style="color: aliceblue; text-align: center; margin-bottom: 3px;">#<%= index + 1 %></h3>
+      <h6 style="color: aliceblue; text-align: center; margin: 0px; margin-bottom: 5px;">rank</h6>
+      <h4 style="color: aliceblue; text-align: center; margin: 0px;"><%= server.upvotes %></h4>
+      <h6 style="color: aliceblue; text-align: center; margin-top: 3px; margin-bottom: 15px;">upvotes</h6>
+    </div>
+    <div id="details" style="display: table-cell; padding: 5px; width: 250px;">
+      <div>
+        <h2 style="top: 0px;"><a href="/servers/<%= server._id %>" style="text-decoration: none; color: #00a0d1;"><%= server.name %></a></h2>
+          <% if(server.onlineStatus) {%>
+            <p>Player count: <%= server.playerCount %></p>
+            <%} else {%>
+              Player count: <p style="color: red"> offline</p>
+              <%}%>
+              <!-- <p class="date">Date added: <%= server.dateAdded.toLocaleDateString() %></p>   -->
+        <div style="overflow: hidden; font-size: 15px; color: grey; height: 35px; text-overflow: ellipsis;   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; padding-right: 10px;"><%= server.description%></div>      
+      </div>
+    </div>
+    <!-- <h6><a href="/account?id=<%= server.ownerID %>"><%= server.owner %></a></h6> -->
+    <div id="banner" style="display: table-cell; width: 468px; padding-right: 10px;">
+      <div style="display:flex; position: absolute; align-items: center; top: 0; bottom: 0;">
+        <img src="/banners/<%= server.banner %>" alt="Server banner" style="width: 468px; height: 60px;">
+      </div>
+    </div>
+    <div id="ip,vote" style="display: table-cell; position: relative;">
+      <div id="ip" style="background-color: #444; padding: 10px; display: flex; align-items: center; justify-content: center; top: 0px; bottom: 50%; left: 0px; right: 0px; position: absolute; ">
+        <p style="display: inline-block; color:aliceblue; font-weight:bold; "><%= server.ip %></p>
+        <img src="icons/clipboard.svg" style="display: inline-block; width: 15px; padding-left: 5px; color:aliceblue"/>
+      </div>
+      <div id="votebutton" style="display: flex; justify-content: center; align-items: center; text-align: center; bottom: 0px; left: 0px; right: 0px; top: 50%; position: absolute; background-color: green;">
+        <a href="/vote/" style="color: aliceblue; font-weight: bold;">vote for server</a>
+      </div>
+    </div>
+
+    <!-- <p><%= server.description %></p> -->
+
+    <!-- <p>Current uptime: <%= server.uptime %></p> -->
+
+    <!-- Display the upvote and delete buttons -->
+    <!-- <div class="server-actions">
+      <form action="/server/<%= server._id %>/upvote" method="post">
+        <button type="submit">Upvote</button>
+      </form>
+      <form action="/api/delete/<%= server.id %>" method="get">
+        <button type="submit">Delete</button>
+      </form>
+    </div> -->
+  </div>
+  <% }); %>
+</div>

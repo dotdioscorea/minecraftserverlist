@@ -1,35 +1,52 @@
 <html>
-<head>
-  <title>Minecraft server list</title>
-  <link href="/style.css" rel="stylesheet">
-</head>
-<body>
-  <!-- Header with website logo and menu -->
-  <header>
-    <h1>My Minecraft Server List</h1>
-    <nav>
-      <ul class='menu'>
-        <li><a href="/server-list">Server List</a></li>
-        <li><a href="/server/server-submit">Submit a Server</a></li>
-        <li style='float:right'>
-        	<form action="search" method="get">
-    		<input type="text" name="query" placeholder="Search servers">
-    		<button type="submit">Search</button>
-  </form>
-        </li>
-</form>
-      </ul>
-    </nav>
-  </header>
+  <head>
+    <title>Minecraft server list</title>
+    <link href="/style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Header with website logo and menu -->
+    <header>
+      <h1>My Minecraft Server List</h1>
+      <nav>
+        <ul class="menu">
+          <li><a href="/">Home</a></li>
+          <li><a href="/servers/server-submit">Submit a Server</a></li>
+          <li style="float: right">
+            <% if (typeof user != 'undefined' && user != null) { %>
+            <p style="display: inline-block">Welcome, <%= user.username %></p>
+            <form style="display: inline-block" action="/account/logout" method="GET">
+              <input type="submit" value="Log out"/>
+            </form>
+            <% } else { %>
+              <button style="display: inline-block;" onclick="redirectToLogin()">Login</button>
+            <form style="display: inline-block" action="/account/register" method="POST">
+              <input type="submit" value="Register"/>
+            </form>
+            <% } %>
+          </li>
+          <li style="float: right">
+            <form action="search" method="get">
+              <input type="text" name="query" placeholder="Search servers" />
+              <button type="submit">Search</button>
+            </form>
+          </li>
+        </ul>
+      </nav>
+    </header>
 
-  <!-- Main content of the page -->
-  <div class='centrecolumn'>
-  <%- body %>
-  </div>
+    <!-- Main content of the page -->
+    <div class="centrecolumn"><%- body %></div>
 
-  <!-- Footer with copyright information -->
-  <footer>
-    <p>Copyright My Minecraft Server List 2021</p>
-  </footer>
-</body>
+    <!-- Footer with copyright information -->
+    <footer>
+      <p>Copyright My Minecraft Server List 2021</p>
+    </footer>
+  </body>
 </html>
+
+<script>
+function redirectToLogin() {
+  const currentUrl = window.location.pathname;
+  window.location.href = '/account/login?origin=' + encodeURIComponent(currentUrl);
+}
+</script>

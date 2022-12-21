@@ -1,23 +1,332 @@
+<div
+  class="body"
+  id="server-page-body"
+  style="position: relative; margin: -20px; height: 450px"
+>
+  <div
+    class="left-column"
+    style="
+      width: 60%;
+      background-color: #fff;
+      display: inline-block;
+      position: absolute;
+      left: 0px;
+      bottom: 0px;
+      top: 0px;
+    "
+  >
+    <div id="left-column-contents" style="padding: 10px;">
+      <nav class="subpage-nav-bar">
+        <button class="menu-item" data-page="page1">Info</button>
+        <button class="menu-item" data-page="page2">Videos</button>
+        <button class="menu-item" data-page="page3">Links</button>
+        <button class="menu-item" data-page="page4">Vote</button>
+      </nav>
 
-<h1><%= server.name %></h1> <!-- Insert the server name -->
-<div class='server'>
-<p>IP address: <%= server.ip %></p> <!-- Insert the server IP address -->
-<p>Description: <%= server.description %></p> <!-- Insert the server description -->
-<p class='date'>Date added: <%= server.dateAdded.toLocaleDateString() %></p>
-<p>Status:
-  <% if (server.status === 'online') { %> <!-- Check the server status and render the appropriate message -->
-  Online
-  <% } else { %>
-  Offline
-  <% } %>
-</p>
-      <!-- Display the upvote and delete buttons -->
-      <div class="server-actions">
-        <form action="/server/<%= server._id %>/upvote" method="post">
-          <button type="submit">Upvote</button>
-        </form>
-        <form action="/server/delete/<%= server.id %>" method="get">
-          <button type="submit">Delete</button>
-        </form>
+      <div id="page1" class="subpage active">
+        <p>page 1</p>
       </div>
+
+      <div id="page2" class="subpage">
+        <p>page 2</p>
+      </div>
+
+      <div id="page3" class="subpage">
+        <p>page 3</p>
+      </div>
+
+      <div id="page4" class="subpage">
+        <p>page 4</p>
+      </div>
+    </div>
+  </div>
+
+  <div
+    id="right-column"
+    style="
+      width: 40%;
+      background-color: #222;
+      display: inline-block;
+      position: absolute;
+      right: 0px;
+      bottom: 0px;
+      top: 0px;
+    "
+  >
+    <div id="left-column-contents" style="padding: 26px">
+      <div id="server-name">
+        <p
+          style="
+            font-size: larger;
+            color: white;
+            font-weight: bold;
+            padding-bottom: 20px;
+            position: relative;
+            left: -5px;
+            top: -5px;
+            display: inline-block;
+          "
+        >
+          <%= server.name %>
+        </p>
+        <p
+          style="
+            font-size: medium;
+            color: rgba(255, 255, 255, 0.801);
+            font-weight: bold;
+            padding-bottom: 20px;
+            position: relative;
+            left: 5px;
+            top: -5px;
+            display: inline-block;
+          "
+        >
+          <%= server.version %>
+        </p>
+      </div>
+      <div
+        id="server-page-ip"
+        style="
+          border-color: #555;
+          border-width: 2px;
+          border-style: solid;
+          padding: 10px;
+          display: flex;
+          align-items: center;
+          position: relative;
+        "
+      >
+        <p
+          style="
+            font-size: medium;
+            color: white;
+            font-weight: bold;
+            display: inline-block;
+          "
+        >
+          <%= server.ip %>
+        </p>
+        <img
+          style="
+            display: inline-block;
+            width: 20px;
+            position: absolute;
+            right: 10;
+          "
+          src="/icons/clipboard.svg"
+        />
+      </div>
+      <div
+        id="status"
+        style="
+          display: flex;
+          align-items: center;
+          margin-top: 15px;
+          position: relative;
+        "
+      >
+        <% if(server.onlineStatus) {%>
+        <div class="circle green"></div>
+        <p
+          style="
+            color: green;
+            display: inline-block;
+            padding-left: 5px;
+            font-weight: bold;
+          "
+        >
+          online
+        </p>
+        <%} else {%>
+        <div class="circle red"></div>
+        <p
+          style="
+            color: red;
+            display: inline-block;
+            padding-left: 5px;
+            font-weight: bold;
+          "
+        >
+          offline
+        </p>
+        <%}%>
+        <div style="font-size: 12px; color: #eee; position: absolute; right: 0">
+          last checked <%=moment.duration(server.lastPinged -
+          Date.now()).humanize();%> ago
+        </div>
+      </div>
+      <div>
+        <p
+          style="
+            margin-top: 15px;
+            color: #eee;
+            font-size: medium;
+            font-weight: bold;
+          "
+        >
+          <%= server.playerCount %> players
+        </p>
+      </div>
+      <div style="margin-top: 25px">
+        <p
+          style="
+            color: #555;
+            font-size: medium;
+            font-weight: bold;
+            display: inline-block;
+            width: 40%;
+          "
+        >
+          IP
+        </p>
+        <p
+          style="
+            color: #ddd;
+            font-size: medium;
+            font-weight: bold;
+            display: inline-block;
+          "
+        >
+          <%= server.ip %>
+        </p>
+      </div>
+      <div style="margin-top: 15px">
+        <p
+          style="
+            color: #555;
+            font-size: medium;
+            font-weight: bold;
+            display: inline-block;
+            width: 40%;
+          "
+        >
+          Owner
+        </p>
+        <a
+          style="
+            color: #ddd;
+            font-size: medium;
+            font-weight: bold;
+            display: inline-block;
+          "
+          href="/account?id=<%=server.ownerID%>"
+          ><%= server.owner %></a
+        >
+      </div>
+      <div style="margin-top: 15px">
+        <p
+          style="
+            color: #555;
+            font-size: medium;
+            font-weight: bold;
+            display: inline-block;
+            width: 40%;
+          "
+        >
+          Location
+        </p>
+        <p
+          style="
+            color: #ddd;
+            font-size: medium;
+            font-weight: bold;
+            display: inline-block;
+          "
+        >
+          <%= server.location %>
+        </p>
+        <img
+          src="https://flagsapi.com/GB/flat/64.png"
+          style="
+            height: 20px;
+            display: inline-block;
+            left: 10px;
+            top: 4px;
+            position: relative;
+          "
+        />
+      </div>
+      <div style="margin-top: 15px">
+        <p
+          style="
+            color: #555;
+            font-size: medium;
+            font-weight: bold;
+            display: inline-block;
+            width: 40%;
+          "
+        >
+          Uptime
+        </p>
+        <p
+          style="
+            color: #ddd;
+            font-size: medium;
+            font-weight: bold;
+            display: inline-block;
+          "
+        >
+          <%= server.uptime %>
+        </p>
+      </div>
+      <div style="margin-top: 15px">
+        <p
+          style="
+            color: #555;
+            font-size: medium;
+            font-weight: bold;
+            display: inline-block;
+            width: 40%;
+          "
+        >
+          Date added
+        </p>
+        <p
+          style="
+            color: #ddd;
+            font-size: medium;
+            font-weight: bold;
+            display: inline-block;
+          "
+        >
+          <%= moment(server.dateAdded).fromNow() %>
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script>
+  const menuButtons = document.querySelectorAll(".menu-item");
+
+  menuButtons.forEach((button) => {
+    button.addEventListener("click", (e) => {
+      // hide all pages
+      document.querySelectorAll(".subpage").forEach((page) => {
+        page.classList.remove("active");
+      });
+
+      // show the selected page
+      const pageId = button.getAttribute("data-page");
+      document.getElementById(pageId).classList.add("active");
+    });
+  });
+</script>
+
+<!-- <p>Description: <%= server.description %></p>
+    <p class="date">Date added: <%= server.dateAdded.toLocaleDateString() %></p>
+    <p>Owner: <%=server.owner%></p>
+    <p>
+      Status: <% if (server.status === 'online') { %>
+      Online <% } else { %> Offline <% } %>
+    </p>
+    <div class="server-actions">
+      <form action="/api/<%= server._id %>/upvote" method="post">
+        <button type="submit">Upvote</button>
+      </form>
+      <form action="/api/delete/<%= server.id %>" method="get">
+        <button type="submit">Delete</button>
+      </form>
+    </div>
+  </div> -->
+<!-- </div> -->

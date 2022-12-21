@@ -1,39 +1,74 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser'); // Import the body-parser package
-const serverRoutes = require('./routes/server');
-const indexRouter = require('./routes/index');
-const ejs = require('ejs'); // Import the ejs module
-const ejsLayouts = require('express-ejs-layouts');
+const ejsLayouts = require("express-ejs-layouts");
+const express = require("express");
+const session = require('express-session');
+const mongoose = require("mongoose");
+const https = require('https');
+const fs = require('fs');
+const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser');
+
+const serverRouter = require("./routes/servers");
+const apiRouter = require("./routes/api");
+const indexRouter = require("./routes/index");
+const accountRouter = require("./routes/account");
+const serverStatusChecker = require("./helpers/server-status-checker")
+
+const userSchema = require("./models/userSchema");
+//const ejs = require("ejs"); // Import the ejs module
 
 // Connect to the MongoDB database
-mongoose.connect('mongodb://localhost/minecraft-servers', {
+mongoose.connect("mongodb://localhost/minecraft-servers", {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
 });
 
 const app = express();
 
 app.use(bodyParser.json()); // Use the body-parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
-
 app.use(ejsLayouts);
+app.use(cookieParser());
 
-// Set the view engine to ejs
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs"); // Set the view engine to ejs
 
-// Register the public directory as a static directory
-app.use(express.static(__dirname + '/public'));
+app.use(session({
+  secret: 'my-secret', // a secret key to sign the session ID cookie
+  resave: false,
+  saveUninitialized: true
+}));
 
-// Use the JSON parser for handling requests with JSON bodies
+
+app.use((req, res, next) => {
+  if (typeof req.session != 'undefined' && req.session.hasOwnProperty('user')) {
+    app.locals.user = { username: req.session.user.username };
+  } else {
+    app.locals.user = null;
+  }
+  next();
+});
+
 app.use(express.json());
+app.use(express.static(__dirname + "/public")); // Register the public directory as a static directory
+app.use('/banners', express.static(__dirname + '/banners'));
+app.use("/servers", serverRouter);
+app.use("/account", accountRouter);
+app.use("/api", apiRouter);
+app.use("/", indexRouter);
 
-// Use the server routes for handling requests to the /server path
-app.use('/server', serverRoutes);
-app.use('/', indexRouter);
+app.use(function (req, res, next) {
+  res.status(404).send("<h1>Sorry nothing found!<h1>");
+});
+
+serverStatusChecker.startCheckingServers();
 
 // Start the server
 const port = 3000;
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
+
+// const options = {
+//   // key: fs.readFileSync('server.key'),
+//   // cert: fs.readFileSync('server.cert')
+// };
+// https.createServer(options, app).listen(443);

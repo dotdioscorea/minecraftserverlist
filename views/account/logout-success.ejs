@@ -1,0 +1,12 @@
+<% if (typeof err === 'undefined') {%>
+  <p>Logout successful!. You will be redirected to the home page in a few seconds, or click <a href="/">here</a></p>
+<%} else {%>
+  <p><%=err%></p>
+<%}%>
+
+<!-- Use JavaScript to automatically redirect the user to the server list page -->
+<script>
+  setTimeout(function() {
+    window.location = '/';
+  }, 3000); // Redirect the user after 3 seconds
+</script>
