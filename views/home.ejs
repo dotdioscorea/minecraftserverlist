@@ -35,20 +35,47 @@
         <a href="/vote/" style="color: aliceblue; font-weight: bold;">vote for server</a>
       </div>
     </div>
-
-    <!-- <p><%= server.description %></p> -->
-
-    <!-- <p>Current uptime: <%= server.uptime %></p> -->
-
-    <!-- Display the upvote and delete buttons -->
-    <!-- <div class="server-actions">
-      <form action="/server/<%= server._id %>/upvote" method="post">
-        <button type="submit">Upvote</button>
-      </form>
-      <form action="/api/delete/<%= server.id %>" method="get">
-        <button type="submit">Delete</button>
-      </form>
-    </div> -->
   </div>
   <% }); %>
+  <% if (totalPages > 1) { %>
+    <div class="pagination-container">
+      <% if (page > 1) { %>
+        <li class="page-item" style="display: inline-block;">
+          <a class="page-link" href="?page=<%= page - 1 %>" data-page="<%= page - 1 %>">&lt;</a>
+        </li>
+      <% } %>
+      <% range = 2 %>
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <% if (i === 1 || i === totalPages || (Math.abs(page - i) <= range) || (i === page - 3) || (i === page + 3) || (i <= (3 * range + 1) && page <= (2 * range + 1)) || (i >= totalPages - (3 * range + 1) && page >= totalPages - (2 * range + 1))) { %>
+          <li class="page-item <%= i === page ? 'active' : '' %>" style="display: inline-block;">
+            <a class="page-link" <% if (i === parseInt(page)) {%>style="font-weight: bold;"<%}%> href="?page=<%= i %>" data-page="<%= i %>"><%= i %></a>
+          </li>
+        <% } else if (i === 2 && page > 4) { %>
+          <li class="page-item disabled" style="display: inline-block;">
+            <span class="page-link">...</span>
+          </li>
+        <% } else if (i === totalPages - 1 && page < totalPages - 3) { %>
+          <li class="page-item disabled" style="display: inline-block;">
+            <span class="page-link">...</span>
+          </li>
+        <% } %>
+      <% } %>
+      
+      <% if (page < totalPages) { %>
+        <li class="page-item" style="display: inline-block;">
+          <a class="page-link" href="?page=<%= parseInt(page) + 1 %>" data-page="<%= parseInt(page) + 1 %>">&gt;</a>
+        </li>
+      <% } %>
+    </div>
+    
+  <% } %>
 </div>
+
+<script>
+  $('.pagination .page-link').click(function(e) {
+    e.preventDefault();
+    const page = $(this).data('page');
+    // Make an AJAX request to the server to retrieve the results for the selected page
+    // and update the page with the new results
+  });
+</script>

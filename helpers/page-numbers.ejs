@@ -1,0 +1,32 @@
+<% if (totalPages > 1) { %>
+    <div class="pagination-container">
+      <% if (page > 1) { %>
+        <li class="page-item" style="display: inline-block;">
+          <a class="page-link" href="?page=<%= page - 1 %>" data-page="<%= page - 1 %>">&lt;</a>
+        </li>
+      <% } %>
+      
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <% if (i === 1 || i === totalPages || (Math.abs(page - i) <= range) || (i === page - 3) || (i === page + 3)) { %>
+          <li class="page-item <%= i === page ? 'active' : '' %>" style="display: inline-block;">
+            <a class="page-link" href="?page=<%= i %>" data-page="<%= i %>"><%= i %></a>
+          </li>
+        <% } else if (i === 2 && page > 4) { %>
+          <li class="page-item disabled" style="display: inline-block;">
+            <span class="page-link">...</span>
+          </li>
+        <% } else if (i === totalPages - 1 && page < totalPages - 3) { %>
+          <li class="page-item disabled" style="display: inline-block;">
+            <span class="page-link">...</span>
+          </li>
+        <% } %>
+      <% } %>
+      
+      <% if (page < totalPages) { %>
+        <li class="page-item" style="display: inline-block;">
+          <a class="page-link" href="?page=<%= parseInt(page) + 1 %>" data-page="<%= parseInt(page) + 1 %>">&gt;</a>
+        </li>
+      <% } %>
+    </div>
+    
+  <% } %>

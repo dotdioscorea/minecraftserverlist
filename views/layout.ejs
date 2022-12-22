@@ -24,9 +24,7 @@
               <a style="display: inline-block" href="/account/logout">LOG OUT</a>
               <% } else { %>
                 <button style="display: inline-block;" onclick="redirectToLogin()">LOGIN</button>
-              <form style="display: inline-block" action="/account/register" method="POST">
-                <input type="submit" value="Register"/>
-              </form>
+              <a style="display: inline-block" href="/account/register">REGISTER</a>
               <% } %>
             </li>
         </ul>
@@ -45,9 +43,11 @@
     <div class="centrecolumn"><%- body %></div>
 
     <!-- Footer with copyright information -->
+    <div style="position: absolute; width: 100%; bottom: 0px;">
     <footer style="margin-top: 30px; background-color: aliceblue; padding: 20px; border-top: 1px; border-style: solid; border-color: #888;">
       <p>Copyright My Minecraft Server List 2021</p>
     </footer>
+    </div>
   </body>
 </html>
 

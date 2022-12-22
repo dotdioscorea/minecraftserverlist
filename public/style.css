@@ -203,3 +203,6 @@ li input {
   border-width: 0;
   border-style: solid;
 }
+.pagination-container {
+  text-align: center;
+}
