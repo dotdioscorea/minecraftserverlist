@@ -57,7 +57,7 @@ async function checkServers() {
   });
 
   //SCHEDULE THE NEXT CHECK
-  timeoutId = setTimeout(checkServers, 2000);
+  timeoutId = setTimeout(checkServers, 120000);
 }
 
 //CALLED TO START CHECKING SERVERS IN SECONDS

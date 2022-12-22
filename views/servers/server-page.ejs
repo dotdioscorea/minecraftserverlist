@@ -16,6 +16,11 @@
     "
   >
     <div id="left-column-contents" style="padding: 10px;">
+      <% if (typeof user != 'undefined' && user != null && user.id === server.ownerID) { %>
+        <div id="manage-server-button">
+          <a href="<%=server._id%>/edit" style="color: red; text-decoration: none;">Click here to manage the server</a>
+        </div>
+      <% } %>
       <nav class="subpage-nav-bar">
         <button class="menu-item" data-page="page1">Info</button>
         <button class="menu-item" data-page="page2">Videos</button>
@@ -29,6 +34,8 @@
           <div class="server-banner" style="text-align: center; width: 100%;">
             <img src="/banners/<%= server.banner %>" alt="Server banner" style="width: 100%;">
           </div>
+          <br>
+          <h3>Server description</h3>
           <div class="server-description">
             <%= server.description %>
           </div>
@@ -225,7 +232,7 @@
             font-weight: bold;
             display: inline-block;
           "
-          href="/account?id=<%=server.ownerID%>"
+          href="/account/servers?userid=<%=server.ownerID%>"
           ><%= server.owner %></a
         >
       </div>

@@ -4,49 +4,48 @@
     <link href="/style.css" rel="stylesheet" />
   </head>
   <body>
-    <!-- Header with website logo and menu -->
     <header>
-      <h1>My Minecraft Server List</h1>
-      <nav>
-        <ul class="menu">
-          <li><a href="/">Home</a></li>
-          <li><a href="/servers/server-submit">Submit a Server</a></li>
-          <li style="float: right">
+      <nav style="background-color: rgba(255,255,255,0.8); height: 45px; width: 100%; z-index: 1; top: 0px">
+        <ul class="menu" style="position:relative; width: 80%; margin: auto;">
+            <li><a href="/">HOME</a></li>
+            <li><a href="/servers/server-submit">SUBMIT A SERVER</a></li>
             <% if (typeof user != 'undefined' && user != null) { %>
-            <p style="display: inline-block">Welcome, <%= user.username %></p>
-            <form style="display: inline-block" action="/account/logout" method="GET">
-              <input type="submit" value="Log out"/>
-            </form>
-            <% } else { %>
-              <button style="display: inline-block;" onclick="redirectToLogin()">Login</button>
-            <form style="display: inline-block" action="/account/register" method="POST">
-              <input type="submit" value="Register"/>
-            </form>
-            <% } %>
-          </li>
-          <li style="float: right">
-            <form action="search" method="get">
-              <input type="text" name="query" placeholder="Search servers" />
-              <button type="submit">Search</button>
-            </form>
-          </li>
+              <li> <a href="/account/servers?userid=<%=user.id%>" class="menu-button white">MY SERVERS</a></li>
+              <li> <a href="/account" class="menu-button white">MY ACCOUNT</a></li>
+              <% } %>
+            <li style="float: right;">
+              <form action="search" method="get">
+                <input type="text" name="query" placeholder="SEARCH SERVERS" style=""/>
+              </form>
+            </li>
+            <li style="float: right;">
+              <% if (typeof user != 'undefined' && user != null) { %>
+              <p style="display: inline-block"><%= user.username.toUpperCase() %></p>
+              <a style="display: inline-block" href="/account/logout">LOG OUT</a>
+              <% } else { %>
+                <button style="display: inline-block;" onclick="redirectToLogin()">LOGIN</button>
+              <form style="display: inline-block" action="/account/register" method="POST">
+                <input type="submit" value="Register"/>
+              </form>
+              <% } %>
+            </li>
         </ul>
       </nav>
 
-      <div class="menu-bar center">
+      <nav class="menu-bar center" style="margin-top: 35px;">
         <% for (category in categories) { %>
           <a href="/category/<%= category %>" class="menu-button white category-button">
-            <%= category %>
+            <%= category.toUpperCase() %>
           </a>
         <% } %>
-      </div>
+        </nav>
     </header>
 
     <!-- Main content of the page -->
     <div class="centrecolumn"><%- body %></div>
 
     <!-- Footer with copyright information -->
-    <footer>
+    <footer style="margin-top: 30px; background-color: aliceblue; padding: 20px; border-top: 1px; border-style: solid; border-color: #888;">
       <p>Copyright My Minecraft Server List 2021</p>
     </footer>
   </body>

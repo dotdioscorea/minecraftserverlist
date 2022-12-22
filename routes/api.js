@@ -7,7 +7,7 @@ const sizeOf = require("image-size");
 const path = require("path");
 const fs = require("fs");
 const ssc = require("../helpers/server-status-checker");
-const { url } = require("inspector");
+const bcrypt = require("bcrypt");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -55,7 +55,7 @@ router.post("/submit", upload.single("banner"), async (req, res) => {
     const ip = req.body.ip;
     const description = req.body.description;
     const banner = req.file;
-    const categories = req.body['server-categories'];
+    const categories = req.body["server-categories"];
 
     //CHECK FOR VALID SESSION
     if (
@@ -183,17 +183,122 @@ router.post("/:id/upvote", (req, res) => {
 });
 
 // CALLED TO DELETE SERVER
-router.get("/delete/:id", (req, res) => {
-  const id = req.params.id; // Get the server id from the URL
-  Server.findByIdAndDelete(id, (err) => {
-    // Find and delete the server
+router.get("/delete/server/:id", async (req, res) => {
+  const id = req.params.id;
+  await Server.findByIdAndRemove(id, async (err, server) => {
     if (err) {
-      console.log(err); // Log any errors
-      return res.send("Error deleting server"); // Return an error message
+      console.log(err);
+      return res.send(err);
     }
-    console.log("Server deleted successfully");
-    return res.redirect("/"); // Redirect the user to the homepage
+    //REMOVE SERVER'S ID FROM ITS OWNER'S PROFILE
+    await User.findById(server.ownerID, async (err, user) => {
+      const index = user.serverIDs.indexOf(server.id);
+      if (index > -1) {
+        user.serverIDs.splice(index, 1);
+      }
+    });
+    return res.redirect("/delete/success?type=server");
   });
+});
+
+// CALLED TO DELETE A USER AND ANY SERVERS ASSOCIATED WITH THEM
+router.get("/delete/user/:id", async (req, res) => {
+  //CHECK FOR VALID USER SESSION
+  if (req.session.user && req.session.user.id === req.params.id) {
+    //DELETE USER FROM DATABASE
+    await User.findByIdAndRemove(req.session.user.id, async (err, user) => {
+      if (err) {
+        return console.log(err);
+      }
+      //DELETE ALL SERVERS ASSOCIATED WITH THE USER
+      for (serverID in user.serverIDs) {
+        await Server.findByIdAndDelete(serverID, (err, user) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      }
+    });
+
+    //TIDY UP
+    req.session.destroy();
+    return res.redirect("/delete/success?type=user");
+  } else {
+    //USER NOT LOGGED IN OR WRONG USER
+    return res.send("You do not have access to that.");
+  }
+});
+
+// CALLED TO UPDATE USER DETAILS
+router.post("/update/user", async (req, res) => {
+  if (req.session.user) {
+    const currentPassword = req.body.currentPassword;
+    const newUsername = req.body.newUsername;
+    const newEmail = req.body.newEmail;
+    const newPassword = req.body.newPassword;
+
+    //CHECK FOR MISSING FORM DETAILS
+    if (!(newUsername || newEmail || newPassword)) {
+      return res.redirect("/account?error=1");
+    }
+    if (!currentPassword) {
+      return res.redirect("/account?error=2");
+    }
+
+    //FIND USER
+    User.findById(req.session.user.id, async (err, user) => {
+      if (err) {
+        console.log(err);
+        return res.sendStatus(500);
+      }
+
+      //CHECK PASSWORD MATCH
+      const result = await bcrypt.compare(currentPassword, user.password);
+      if (!result) {
+        return res.redirect("/account?error=3");
+      }
+
+      //UPDATE RELEVANT DETAILS
+      if (newUsername) {
+        console.log("Updating username")
+        user.username = newUsername;
+      }
+      if (newEmail) {
+        console.log("Updating email")
+        user.email = newEmail;
+      }
+      if (newPassword) {
+        console.log("Updating password")
+        user.password = await bcrypt.hash(newPassword, 10);
+      }
+
+      //SAVE NEW USER DETAILS
+      await user.save((err) => {
+        if (err) {
+          console.log(err);
+          return res.send("error saving new user details");
+        }
+        //UPDATE SESSION
+        req.session.user = {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+          serverIDs: user.serverIDs,
+          lastSeen: user.lastSeen,
+          dateAdded: user.dateAdded
+        };
+
+        //SHOW SUCCESS WINDOW
+        return res.redirect("/account?success=true");
+      });
+    });
+  } else {
+    //USER NOT LOGEGD IN
+    return res.redirect(
+      "/account/login?access=false&origin=" +
+        encodeURI("/account")
+    );
+  }
 });
 
 module.exports = router;

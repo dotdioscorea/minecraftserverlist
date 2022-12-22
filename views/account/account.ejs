@@ -1,0 +1,25 @@
+<h1>Account Management</h1>
+<% if (error !== null) { %>
+    <p style="color:red; margin-bottom: 20px;"><%= error %></p>
+<% } else if (success) { %>
+    <p style="color:green; margin-bottom: 20px;">Successfully updated details</p>
+<% } else {%>
+    <p style="margin-bottom: 20px;"></p>
+<% } %>
+
+  <form method="post" action="/api/update/user">
+    <p>Current username: <%= user.username %></p>
+    <label for="newUsername">New Username:</label><br>
+    <input type="text" id="newUsername" name="newUsername"><br>
+    <p>Current email: <%= user.email %></p>
+    <label for="newEmail">New Email:</label><br>
+    <input type="email" id="newEmail" name="newEmail"><br>
+    <label for="newPassword">New Password:</label><br>
+    <input type="password" id="newPassword" name="newPassword"><br>
+    <label for="currentPassword">Current Password (required):</label><br>
+    <input type="password" id="currentPassword" name="currentPassword" required><br>
+    <input type="submit" value="Submit">
+  </form>
+  <form method="post" action="/account/delete">
+    <input type="submit" value="Delete Account">
+  </form>

@@ -34,4 +34,23 @@ router.get("/:serverid", async (req, res) => {
   });
 });
 
+router.get("/:serverid/edit", async (req, res) => {
+  const serverid = req.params.serverid;
+
+  if (req.session.user)
+  {
+
+    if (req.session.user.serverIDs.includes(serverid.toString())) {
+      Server.findById(serverid, async (err, server) => {
+        if (err) {
+          return res.send(err);
+        }
+        return res.render("servers/edit", { server });
+      })
+    }
+    return res.send("You do not have permission to edit this server")
+  }
+  return res.redirect("/account/login?access=false&origin=" + encodeURI("/servers/" + serverid + "/edit"))
+})
+
 module.exports = router;

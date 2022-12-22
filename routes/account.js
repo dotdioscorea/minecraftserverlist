@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/userSchema");
+const Server = require("../models/serverSchema");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const config = require("../config");
-const session = require("express-session");
+const moment = require("moment");
 
 router.post("/register", async (req, res) => {
   if (!req.body.username) {
@@ -84,18 +83,27 @@ router.get("/logout", (req, res) => {
 
 //CALLED FOR LOGIN PAGE, MAY HAVE AN ORIGIN QUERY, MAY HAVE ACCESS DENIED ERROR
 router.get("/login", async (req, res) => {
-  //USER ALREADY LOGGED IN
-  if (typeof req.session != "undefined" && req.session.hasOwnProperty("user")) {
-    //ADD REDIRECT IF PRESENT
-    return res.redirect("/");
-  } 
+  //LOGIN SUCCESS
+  if (
+    (typeof req.session != "undefined" && req.session.hasOwnProperty("user")) ||
+    req.query.success
+  ) {
+    target = "/";
+    if (typeof req.query.origin !== "undefined") {
+      target = decodeURIComponent(req.query.origin);
+    }
+    res.render("account/login-success", { target });
+  }
   //DISPLAY ACCESS DENIED ERROR MESSAGE IF SPECIFIED
   else if (req.query.access === "false") {
-    res.render("account/login", { msg: "You need to be logged in to do that", origin:  req.query.origin });
-  } 
+    res.render("account/login", {
+      err: "You need to be logged in to do that",
+      origin: req.query.origin,
+    });
+  }
   //SIMPLE LOGIN PAGE
   else {
-    res.render("account/login", { origin:  req.query.origin });
+    res.render("account/login", { origin: req.query.origin });
   }
 });
 
@@ -103,7 +111,7 @@ router.get("/login", async (req, res) => {
 router.post("/login", async (req, res) => {
   //NO FORM INPUT SO NO LOGIN ATTEMPTED
   if (!req.body.username) {
-    res.render("account/login", { origin:  req.query.origin});
+    res.render("account/login", { origin: req.query.origin });
     return;
   }
 
@@ -115,7 +123,10 @@ router.post("/login", async (req, res) => {
       user = await User.findOne({ email: req.body.username });
       if (!user) {
         //USER NOT FOUND
-        res.render("account/login", { err: "user or password incorrect", origin:  req.query.origin });
+        res.render("account/login", {
+          err: "user or password incorrect",
+          origin: req.query.origin,
+        });
         return;
       }
     }
@@ -123,7 +134,10 @@ router.post("/login", async (req, res) => {
     //USER HAS BEEN FOUND, SO COMPARE THE PASSWORDS
     const isMatch = await bcrypt.compare(req.body.password, user.password);
     if (!isMatch) {
-      res.render("account/login", { err: "user or password incorrect", origin:  req.query.origin });
+      res.render("account/login", {
+        err: "user or password incorrect",
+        origin: req.query.origin,
+      });
       return;
     }
 
@@ -132,31 +146,68 @@ router.post("/login", async (req, res) => {
     req.session.user = {
       id: user.id,
       username: user.username,
+      email: user.email,
+      serverIDs: user.serverIDs,
+      lastSeen: user.lastSeen,
+      dateAdded: user.dateAdded,
     };
-
-    target = '/'
-    if (typeof req.query.origin !== 'undefined'){
-      target = decodeURIComponent(req.query.origin)
-    }
-    console.log(req.query.origin)
-    res.render("account/login-success", { target });
+    console.log("/account/login?success=true" + (req.query.origin ? ("&origin=" + req.query.origin): ""));
+    return res.redirect("/account/login?success=true" + (req.query.origin ? ("&origin=" + encodeURIComponent(req.query.origin)): ""));
 
   } catch (err) {
     console.log(err);
-    res.render("account/login", { err, origin:  req.query.origin });
+    res.render("account/login", { err, origin: req.query.origin });
   }
 });
 
-router.get("/", async (req, res) => {
-  if (req.query.id) {
-    const userid = req.query.id;
-    User.findById(userid, (err, user) => {
-      if (err) {
-        console.log(err);
-      }
-      res.send(user);
-      //res.render("account/user", { user });
+router.get("/servers", async (req, res) => {
+  user = "";
+  if (typeof req.query.userid !== "undefined") {
+    user = await User.findById(req.query.userid);
+  } else if (req.session.user) {
+    user = req.session.user;
+  } else {
+    return res.redirect("/");
+  }
+
+  user.password = "";
+  user.email = "";
+
+  Server.find({ _id: { $in: user.serverIDs } }, (err, servers) => {
+    if (err) {
+      console.log(err);
+      return res.sendStatus(500);
+    }
+    res.render("account/servers", {
+      servers: servers,
+      pageuser: user,
+      moment,
     });
+  });
+});
+
+//USER ACCOUNT EDIT PAGE
+router.get("/", async (req, res) => {
+  if (req.session.user) {
+    console.log(req.session.user);
+
+    error = null;
+    if (req.query.error === "1") {
+      error = "No details to update.";
+    }
+    if (req.query.error === "2") {
+      error = "Please enter your current password.";
+    }
+    if (req.query.error === "3") {
+      error = "Password is incorrect. Please try again.";
+    }
+    success = req.query.success;
+
+    return res.render("account/account", { error, success });
+  } else {
+    res.redirect(
+      "account/login?access=false&origin=" + encodeURIComponent("/account")
+    );
   }
 });
 

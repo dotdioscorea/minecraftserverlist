@@ -40,7 +40,7 @@ app.use(session({
 
 app.use((req, res, next) => {
   if (typeof req.session != 'undefined' && req.session.hasOwnProperty('user')) {
-    app.locals.user = { username: req.session.user.username };
+    app.locals.user = req.session.user;
   } else {
     app.locals.user = null;
   }
